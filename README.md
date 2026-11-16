@@ -1,20 +1,31 @@
-Monitoring d'une application Flask avec Prometheus et Grafana
-ISET Tozeur – Master DevOps & Cloud 2 – Disponibilité des Infrastructures
+# Monitoring d'une application Flask avec Prometheus et Grafana
+
+**ISET Tozeur – Master DevOps & Cloud 2 – Disponibilité des Infrastructures**
+
 Auteur : Ferid Saad
-Objectif
+
+## Objectif
+
 Mettre en place un monitoring complet d'une application web simple (Flask) afin d'observer :
-ses métriques internes (temps de réponse, requêtes traitées) ;
-son état dans Prometheus ;
-ses indicateurs dans un dashboard Grafana.
-Architecture
+
+- ses métriques internes (temps de réponse, requêtes traitées) ;
+- son état dans **Prometheus** ;
+- ses indicateurs dans un dashboard **Grafana**.
+
+## Architecture
+
 ```
  curl / navigateur ──► Flask app (:5000) ◄── scrape /metrics (5s) ── Prometheus (:9090) ◄── Grafana (:3000)
 ```
-Service	Image	Port	Rôle
-app	build local (python:3.10-slim)	5000	Application Flask + endpoint `/metrics`
-prometheus	prom/prometheus	9090	Collecte et stockage des métriques
-grafana	grafana/grafana	3000	Visualisation (dashboard)
-Structure du projet
+
+| Service | Image | Port | Rôle |
+|---|---|---|---|
+| app | build local (python:3.10-slim) | 5000 | Application Flask + endpoint `/metrics` |
+| prometheus | prom/prometheus | 9090 | Collecte et stockage des métriques |
+| grafana | grafana/grafana | 3000 | Visualisation (dashboard) |
+
+## Structure du projet
+
 ```
 flask-monitoring/
 ├── app.py
@@ -24,135 +35,198 @@ flask-monitoring/
 ├── screenshots/
 └── README.md
 ```
-Prérequis
-Docker et Docker Compose
-Git
-Un compte GitHub
+
+## Prérequis
+
+- Docker et Docker Compose
+- Git
+- Un compte GitHub
+
 ---
-Étape 1 : Créer le répertoire du projet
+
+## Étape 1 : Créer le répertoire du projet
+
 ```bash
-mkdir flask-monitoring \&\& cd flask-monitoring
+mkdir flask-monitoring && cd flask-monitoring
 git init
 ```
+
 📸 `screenshots/01-projet.png`
+
 ```bash
 git add .
 git commit -m "step 1: initialisation du projet"
 ```
-Étape 2 : Créer l'application Flask (`app.py`)
+
+## Étape 2 : Créer l'application Flask (`app.py`)
+
 L'application expose deux routes :
-`/` : renvoie `Hello DevOps!` après un traitement simulé de 0,1 à 0,5 s ;
-`/metrics` : expose les métriques au format Prometheus.
+
+- `/` : renvoie `Hello DevOps!` après un traitement simulé de 0,1 à 0,5 s ;
+- `/metrics` : expose les métriques au format Prometheus.
+
 Métriques définies :
-Métrique	Type	Description
-`app\_requests\_total`	Counter	Nombre total de requêtes
-`app\_request\_latency\_seconds`	Histogram	Latence des requêtes en secondes
+
+| Métrique | Type | Description |
+|---|---|---|
+| `app_requests_total` | Counter | Nombre total de requêtes |
+| `app_request_latency_seconds` | Histogram | Latence des requêtes en secondes |
+
 📸 `screenshots/02-app-py.png`
+
 ```bash
 git add app.py
 git commit -m "step 2: ajout de l'application Flask avec métriques Prometheus"
 ```
-Étape 3 : Créer le Dockerfile
+
+## Étape 3 : Créer le Dockerfile
+
 ```dockerfile
 FROM python:3.10-slim
 WORKDIR /app
 COPY app.py .
-RUN pip install flask prometheus\_client
+RUN pip install flask prometheus_client
 EXPOSE 5000
-CMD \["python", "app.py"]
+CMD ["python", "app.py"]
 ```
+
 📸 `screenshots/03-dockerfile.png`
+
 ```bash
 git add Dockerfile
 git commit -m "step 3: ajout du Dockerfile"
 ```
-Étape 4 : Créer le `docker-compose.yml`
+
+## Étape 4 : Créer le `docker-compose.yml`
+
 Le fichier déclare trois services : `app`, `prometheus` et `grafana`.
+
 > Remarque : si le port 9090 (ou 3000) est déjà utilisé sur l'hôte, il faut arrêter l'ancien conteneur
 > (`docker stop <nom>`) ou changer le port côté hôte (par exemple `"9091:9090"`).
+
 📸 `screenshots/04-compose.png`
+
 ```bash
 git add docker-compose.yml
 git commit -m "step 4: ajout de docker-compose.yml"
 ```
-Étape 5 : Créer `prometheus.yml`
+
+## Étape 5 : Créer `prometheus.yml`
+
 ```yaml
 global:
-  scrape\_interval: 5s
+  scrape_interval: 5s
 
-scrape\_configs:
-  - job\_name: 'flask\_app'
-    static\_configs:
-      - targets: \['app:5000']
+scrape_configs:
+  - job_name: 'flask_app'
+    static_configs:
+      - targets: ['app:5000']
 ```
+
 Prometheus collecte les métriques de l'application toutes les 5 secondes.
+
 📸 `screenshots/05-prometheus-yml.png`
+
 ```bash
 git add prometheus.yml
 git commit -m "step 5: configuration de Prometheus"
 ```
-Étape 6 : Lancer la stack
+
+## Étape 6 : Lancer la stack
+
 ```bash
 docker compose up -d
 docker ps
 ```
+
 Résultat attendu : 3 conteneurs en cours d'exécution (app, prometheus, grafana).
+
 📸 `screenshots/06-docker-ps.png`
+
 ```bash
 git add screenshots/
 git commit -m "step 6: lancement de la stack"
 ```
-Étape 7 : Tester l'application
-Service	URL
-Application	http://localhost:5000
-Métriques	http://localhost:5000/metrics
-Prometheus	http://localhost:9090
-Grafana	http://localhost:3000
-Vérification de la cible Prometheus : Status → Targets → `flask\_app` doit être UP.
+
+## Étape 7 : Tester l'application
+
+| Service | URL |
+|---|---|
+| Application | http://localhost:5000 |
+| Métriques | http://localhost:5000/metrics |
+| Prometheus | http://localhost:9090 |
+| Grafana | http://localhost:3000 |
+
+Vérification de la cible Prometheus : **Status → Targets** → `flask_app` doit être **UP**.
+
 📸 `screenshots/07-app.png`, `07-metrics.png`, `07-targets.png`
+
 ```bash
 git add screenshots/
 git commit -m "step 7: tests de l'application et des cibles Prometheus"
 ```
-Étape 8 : Créer le dashboard Grafana
-a) Source de données : Connections → Data sources → Add data source → Prometheus.
-URL : `http://prometheus:9090` → Save & test.
-b) Nouveau dashboard avec trois panneaux :
-Panneau	Requête PromQL
-Requêtes par seconde	`rate(app\_requests\_total\[1m])`
-Temps de réponse moyen	`rate(app\_request\_latency\_seconds\_sum\[1m]) / rate(app\_request\_latency\_seconds\_count\[1m])`
-Total des requêtes	`app\_requests\_total`
+
+## Étape 8 : Créer le dashboard Grafana
+
+**a) Source de données** : Connections → Data sources → Add data source → Prometheus.
+URL : `http://prometheus:9090` → *Save & test*.
+
+**b) Nouveau dashboard** avec trois panneaux :
+
+| Panneau | Requête PromQL |
+|---|---|
+| Requêtes par seconde | `rate(app_requests_total[1m])` |
+| Temps de réponse moyen | `rate(app_request_latency_seconds_sum[1m]) / rate(app_request_latency_seconds_count[1m])` |
+| Total des requêtes | `app_requests_total` |
+
 📸 `screenshots/08-datasource.png`, `08-dashboard.png`
+
 Le dashboard exporté (Share → Export → JSON) est sauvegardé dans `grafana-dashboard.json`.
+
 ```bash
 git add screenshots/ grafana-dashboard.json
 git commit -m "step 8: dashboard Grafana"
 ```
-Étape 9 : Tester le monitoring
+
+## Étape 9 : Tester le monitoring
+
 Génération de trafic :
+
 ```bash
 while true; do curl -s http://localhost:5000/ > /dev/null; sleep 0.2; done
 ```
+
 Les compteurs augmentent dans Prometheus et dans Grafana. La latence moyenne observée est d'environ 0,3 s,
 ce qui correspond au délai aléatoire simulé (0,1 à 0,5 s).
+
 📸 `screenshots/09-grafana-trafic.png`
+
 ```bash
 git add screenshots/
 git commit -m "step 9: test du monitoring avec génération de trafic"
 git push
 ```
+
 ---
-Problèmes rencontrés
-Problème	Cause	Solution
-`Bind for 0.0.0.0:9090 failed: port is already allocated`	Un ancien conteneur Prometheus utilisait déjà le port 9090	`docker stop <nom>` puis `docker compose up -d`
-Commandes utiles
+
+## Problèmes rencontrés
+
+| Problème | Cause | Solution |
+|---|---|---|
+| `Bind for 0.0.0.0:9090 failed: port is already allocated` | Un ancien conteneur Prometheus utilisait déjà le port 9090 | `docker stop <nom>` puis `docker compose up -d` |
+
+## Commandes utiles
+
 ```bash
 docker compose ps          # état des services
 docker compose logs -f     # logs
 docker compose down        # arrêt et suppression des conteneurs
 ```
-Conclusion
+
+## Conclusion
+
 Ce TP a permis de :
-instrumenter une application Flask avec `prometheus\_client` ;
-collecter ses métriques avec Prometheus ;
-les visualiser dans un dashboard Grafana (débit, latence moyenne, total des requêtes).
+
+- instrumenter une application Flask avec `prometheus_client` ;
+- collecter ses métriques avec Prometheus ;
+- les visualiser dans un dashboard Grafana (débit, latence moyenne, total des requêtes).
