@@ -31,7 +31,7 @@ Un compte GitHub
 ---
 Étape 1 : Créer le répertoire du projet
 ```bash
-mkdir flask-monitoring && cd flask-monitoring
+mkdir flask-monitoring \&\& cd flask-monitoring
 git init
 ```
 📸 `screenshots/01-projet.png`
@@ -45,8 +45,8 @@ L'application expose deux routes :
 `/metrics` : expose les métriques au format Prometheus.
 Métriques définies :
 Métrique	Type	Description
-`app_requests_total`	Counter	Nombre total de requêtes
-`app_request_latency_seconds`	Histogram	Latence des requêtes en secondes
+`app\_requests\_total`	Counter	Nombre total de requêtes
+`app\_request\_latency\_seconds`	Histogram	Latence des requêtes en secondes
 📸 `screenshots/02-app-py.png`
 ```bash
 git add app.py
@@ -57,9 +57,9 @@ git commit -m "step 2: ajout de l'application Flask avec métriques Prometheus"
 FROM python:3.10-slim
 WORKDIR /app
 COPY app.py .
-RUN pip install flask prometheus_client
+RUN pip install flask prometheus\_client
 EXPOSE 5000
-CMD ["python", "app.py"]
+CMD \["python", "app.py"]
 ```
 📸 `screenshots/03-dockerfile.png`
 ```bash
@@ -78,12 +78,12 @@ git commit -m "step 4: ajout de docker-compose.yml"
 Étape 5 : Créer `prometheus.yml`
 ```yaml
 global:
-  scrape_interval: 5s
+  scrape\_interval: 5s
 
-scrape_configs:
-  - job_name: 'flask_app'
-    static_configs:
-      - targets: ['app:5000']
+scrape\_configs:
+  - job\_name: 'flask\_app'
+    static\_configs:
+      - targets: \['app:5000']
 ```
 Prometheus collecte les métriques de l'application toutes les 5 secondes.
 📸 `screenshots/05-prometheus-yml.png`
@@ -108,7 +108,7 @@ Application	http://localhost:5000
 Métriques	http://localhost:5000/metrics
 Prometheus	http://localhost:9090
 Grafana	http://localhost:3000
-Vérification de la cible Prometheus : Status → Targets → `flask_app` doit être UP.
+Vérification de la cible Prometheus : Status → Targets → `flask\_app` doit être UP.
 📸 `screenshots/07-app.png`, `07-metrics.png`, `07-targets.png`
 ```bash
 git add screenshots/
@@ -119,9 +119,9 @@ a) Source de données : Connections → Data sources → Add data source → Pro
 URL : `http://prometheus:9090` → Save & test.
 b) Nouveau dashboard avec trois panneaux :
 Panneau	Requête PromQL
-Requêtes par seconde	`rate(app_requests_total[1m])`
-Temps de réponse moyen	`rate(app_request_latency_seconds_sum[1m]) / rate(app_request_latency_seconds_count[1m])`
-Total des requêtes	`app_requests_total`
+Requêtes par seconde	`rate(app\_requests\_total\[1m])`
+Temps de réponse moyen	`rate(app\_request\_latency\_seconds\_sum\[1m]) / rate(app\_request\_latency\_seconds\_count\[1m])`
+Total des requêtes	`app\_requests\_total`
 📸 `screenshots/08-datasource.png`, `08-dashboard.png`
 Le dashboard exporté (Share → Export → JSON) est sauvegardé dans `grafana-dashboard.json`.
 ```bash
@@ -153,6 +153,6 @@ docker compose down        # arrêt et suppression des conteneurs
 ```
 Conclusion
 Ce TP a permis de :
-instrumenter une application Flask avec `prometheus_client` ;
+instrumenter une application Flask avec `prometheus\_client` ;
 collecter ses métriques avec Prometheus ;
 les visualiser dans un dashboard Grafana (débit, latence moyenne, total des requêtes).
