@@ -128,7 +128,7 @@ URL : `http://prometheus:9090` → *Save & test*.
 ![DATASOURCE](screenshots/08-datasource.png)
 
 
-![DASHBOARD](08-dashboard.png)
+![DASHBOARD](screenshots/08-dashboard.png)
 
 Le dashboard exporté (Share → Export → JSON) est sauvegardé dans `grafana-dashboard.json`.
 
