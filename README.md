@@ -141,7 +141,7 @@ docker ps
 
 Résultat attendu : 3 conteneurs en cours d'exécution (app, prometheus, grafana).
 
-📸 `screenshots/06-docker-ps.png`
+![docker-ps](screenshots/06-docker-ps.png)
 
 ```bash
 git add screenshots/
@@ -159,7 +159,9 @@ git commit -m "step 6: lancement de la stack"
 
 Vérification de la cible Prometheus : **Status → Targets** → `flask_app` doit être **UP**.
 
-📸 `screenshots/07-app.png`, `07-metrics.png`, `07-targets.png`
+![APP](screenshots/07-app.png)
+![METRICS](07-metrics.png)
+![TARGETS](07-targets.png)
 
 ```bash
 git add screenshots/
