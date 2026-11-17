@@ -144,7 +144,11 @@ while true; do curl -s http://localhost:5000/ > /dev/null; sleep 0.2; done
 Les compteurs augmentent dans Prometheus et dans Grafana. La latence moyenne observée est d'environ 0,3 s,
 ce qui correspond au délai aléatoire simulé (0,1 à 0,5 s).
 
-📸 `screenshots/09-grafana-trafic.png`
+![GRAFANA-TRAFIC](screenshots/09-grafana-trafic.png)
+
+
+![GRAFANA-APRES](screenshots/09-grafana-apres.png)
+
 
 ---
 
@@ -154,13 +158,6 @@ ce qui correspond au délai aléatoire simulé (0,1 à 0,5 s).
 |---|---|---|
 | `Bind for 0.0.0.0:9090 failed: port is already allocated` | Un ancien conteneur Prometheus utilisait déjà le port 9090 | `docker stop <nom>` puis `docker compose up -d` |
 
-## Commandes utiles
-
-```bash
-docker compose ps          # état des services
-docker compose logs -f     # logs
-docker compose down        # arrêt et suppression des conteneurs
-```
 
 ## Conclusion
 
