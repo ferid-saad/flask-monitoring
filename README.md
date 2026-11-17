@@ -160,8 +160,8 @@ git commit -m "step 6: lancement de la stack"
 Vérification de la cible Prometheus : **Status → Targets** → `flask_app` doit être **UP**.
 
 ![APP](screenshots/07-app.png)
-![METRICS](07-metrics.png)
-![TARGETS](07-targets.png)
+![METRICS](screenshots/07-metrics.png)
+![TARGETS](screenshots/07-targets.png)
 
 ```bash
 git add screenshots/
