@@ -99,11 +99,17 @@ Résultat attendu : 3 conteneurs en cours d'exécution (app, prometheus, grafana
 Vérification de la cible Prometheus : **Status → Targets** → `flask_app` doit être **UP**.
 
 ![APP](screenshots/07-app.png)
+
 -----------------------------------------
+
 ![METRICS](screenshots/07-metrics.png)
+
 -----------------------------------------
+
 ![TARGETS](screenshots/07-targets.png)
+
 -----------------------------------------
+
 ![GRAFANA](screenshots/07-grafana.png)
 
 ## Étape 8 : Créer le dashboard Grafana
@@ -119,7 +125,10 @@ URL : `http://prometheus:9090` → *Save & test*.
 | Temps de réponse moyen | `rate(app_request_latency_seconds_sum[1m]) / rate(app_request_latency_seconds_count[1m])` |
 | Total des requêtes | `app_requests_total` |
 
-📸 `screenshots/08-datasource.png`, `08-dashboard.png`
+![DATASOURCE](screenshots/08-datasource.png)
+
+
+![DASHBOARD](08-dashboard.png)
 
 Le dashboard exporté (Share → Export → JSON) est sauvegardé dans `grafana-dashboard.json`.
 
